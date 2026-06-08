@@ -1,0 +1,45 @@
+<input id="cep" placeholder="Digite o CEP (8 números)">
+<button onclick="buscar()">Buscar</button>
+
+<pre id="res"></pre>
+
+<script>
+async function buscar() {
+    const resEl = document.getElementById("res");
+    let cep = document.getElementById("cep").value.replace(/\D/g, "");
+
+    if (cep.length !== 8) {
+        resEl.innerText = "CEP inválido.";
+        return;
+    }
+
+    resEl.innerText = "Buscando...";
+
+    try {
+        const resp = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+        const d = await resp.json();
+
+        if (d.erro) {
+            resEl.innerText = "CEP não encontrado.";
+            return;
+        }
+
+        resEl.innerText = 
+`CEP: ${d.cep}
+Logradouro: ${d.logradouro}
+Complemento: ${d.complemento}
+Bairro: ${d.bairro}
+Cidade: ${d.localidade}
+UF: ${d.uf}
+Estado: ${d.estado}
+Região: ${d.regiao}
+DDD: ${d.ddd}
+IBGE: ${d.ibge}
+GIA: ${d.gia}
+SIAFI: ${d.siafi}`;
+        
+    } catch {
+        resEl.innerText = "Erro ao buscar CEP.";
+    }
+}
+</script>
